@@ -96,13 +96,21 @@ output/
 
 - Encodage : UTF-8 ou UTF-16 avec BOM (detection automatique)
 - Un tier nomme `commands` (insensible a la casse)
-- Labels : les 9 classes de commandes
+- Labels : les 8 commandes directionnelles + `none`
 
 ```
 forward | backward | left | right | up | down | yawleft | yawright | none
 ```
 
-Les intervalles non etiquetes ou vides sont automatiquement classes comme `none`.
+#### Comment annoter
+
+1. Ouvrez le fichier `.wav` dans Praat et creez un objet TextGrid associe
+2. Ajoutez un tier de type **interval** nomme `commands`
+3. Pour chaque passage ou le locuteur prononce une commande directionnelle (`forward`, `backward`, `left`, `right`, `up`, `down`, `yawleft`, `yawright`), creez un segment couvrant la duree de la commande et inscrivez le label correspondant
+4. Pour les passages ou le locuteur parle sans prononcer de commande directionnelle (parole non-pertinente, hesitations, commentaires, etc.), creez un segment et annotez-le `none`
+5. Les silences (aucune activite vocale) sont laisses sans annotation — ne creez pas de segment pour les parties silencieuses
+
+En resume : toute parole doit etre annotee (commande ou `none`), seuls les silences restent non annotes. Les intervalles vides sont automatiquement traites comme `none` par le pipeline.
 
 ## Configuration (config.yaml)
 
@@ -287,13 +295,21 @@ output/
 
 - Encoding: UTF-8 or UTF-16 with BOM (auto-detected)
 - A tier named `commands` (case-insensitive)
-- Labels: the 9 command classes
+- Labels: the 8 directional commands + `none`
 
 ```
 forward | backward | left | right | up | down | yawleft | yawright | none
 ```
 
-Unlabeled or empty intervals are automatically classified as `none`.
+#### How to annotate
+
+1. Open the `.wav` file in Praat and create an associated TextGrid object
+2. Add an **interval** tier named `commands`
+3. For each passage where the speaker utters a directional command (`forward`, `backward`, `left`, `right`, `up`, `down`, `yawleft`, `yawright`), create a segment spanning the duration of the command and enter the corresponding label
+4. For passages where the speaker is talking but not uttering a directional command (irrelevant speech, hesitations, comments, etc.), create a segment and label it `none`
+5. Silences (no vocal activity) are left unannotated — do not create segments for silent parts
+
+In short: all speech must be annotated (command or `none`), only silences are left unannotated. Empty intervals are automatically treated as `none` by the pipeline.
 
 ## Configuration (config.yaml)
 

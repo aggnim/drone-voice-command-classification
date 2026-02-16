@@ -1,5 +1,7 @@
 # VoiceStick — Guide utilisateur
 
+> **ENGLISH VERSION BELOW**
+
 Package d'inference pour predire des commandes de drone a partir de fichiers audio. Les modeles SVM et MLP sont pre-entraines et prets a l'emploi.
 
 ## Demarrage rapide

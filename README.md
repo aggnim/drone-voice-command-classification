@@ -1,5 +1,7 @@
 # VoiceStick — Classification de commandes vocales pour drone
 
+> **ENGLISH VERSION BELOW**
+
 Pipeline de classification parole-vers-commande pour le pilotage de drones. Des enregistrements audio de locuteurs francophones prononçant des commandes de pilotage sont convertis en embeddings wav2vec2, puis classifiés par des modeles SVM ou MLP.
 
 ## Classes de commandes

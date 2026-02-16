@@ -1,5 +1,7 @@
 # VoiceStick — Guide developpeur
 
+> **ENGLISH VERSION BELOW**
+
 Pipeline complet pour entrainer des classifieurs de commandes de drone a partir d'enregistrements audio annotes. Comprend la preparation des donnees, l'entrainement (SVM et MLP), la prediction et l'evaluation.
 
 ## Demarrage rapide

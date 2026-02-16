@@ -2,54 +2,54 @@
 
 > **ENGLISH VERSION BELOW**
 
-Package d'inference pour predire des commandes de drone a partir de fichiers audio. Les modeles SVM et MLP sont pre-entraines et prets a l'emploi.
+Package d'inférence pour prédire des commandes de drone à partir de fichiers audio. Les modèles SVM et MLP sont pré-entraînés et prêts à l'emploi.
 
-## Demarrage rapide
+## Démarrage rapide
 
 1. Placez vos fichiers `.wav` dans le dossier `data/`
-2. Lancez la prediction :
+2. Lancez la prédiction :
    ```bash
    python predict.py
    ```
-3. Retrouvez les resultats dans `output/predictions/`
+3. Retrouvez les résultats dans `output/predictions/`
 
 ## Structure du dossier
 
 ```
 user_version/
-├── predict.py           # Script de prediction
+├── predict.py           # Script de prédiction
 ├── config.yaml          # Configuration (chemins)
-├── requirements.txt     # Dependances Python
+├── requirements.txt     # Dépendances Python
 ├── models/
-│   ├── SVM_model/       # Modele SVM pre-entraine
+│   ├── SVM_model/       # Modèle SVM pré-entraîné
 │   │   ├── model_svm.pkl
 │   │   ├── scaler.pkl
 │   │   └── label_encoder.pkl
-│   └── MLP_model/       # Modele MLP pre-entraine
+│   └── MLP_model/       # Modèle MLP pré-entraîné
 │       ├── model_mlp.pkl
 │       ├── scaler.pkl
 │       └── label_encoder.pkl
-├── data/                # Deposez vos fichiers .wav ici
+├── data/                # Déposez vos fichiers .wav ici
 └── output/
-    └── predictions/     # Resultats generes ici
+    └── predictions/     # Résultats générés ici
 ```
 
 ## Configuration (config.yaml)
 
 ```yaml
 paths:
-  models_dir: "models"    # Dossier des modeles pre-entraines
+  models_dir: "models"    # Dossier des modèles pré-entraînés
   data_dir: "data"        # Dossier des fichiers audio .wav
-  output_dir: "output"    # Dossier de sortie des predictions
+  output_dir: "output"    # Dossier de sortie des prédictions
 ```
 
-Les chemins sont relatifs au dossier `user_version/`. Ils peuvent etre remplaces par des chemins absolus si necessaire.
+Les chemins sont relatifs au dossier `user_version/`. Ils peuvent être remplacés par des chemins absolus si nécessaire.
 
-## Comment ca marche
+## Comment ça marche
 
-`predict.py` utilise la **VAD** (Voice Activity Detection, ou detection d'activite vocale) pour trouver automatiquement les moments ou quelqu'un parle dans l'audio. Concretement, l'algorithme mesure le niveau sonore du signal et le compare a un seuil de silence : tout ce qui depasse le seuil est considere comme de la parole, le reste comme du silence ou du bruit de fond.
+`predict.py` utilise la **VAD** (Voice Activity Detection, ou détection d'activité vocale) pour trouver automatiquement les moments où quelqu'un parle dans l'audio. Concrètement, l'algorithme mesure le niveau sonore du signal et le compare à un seuil de silence : tout ce qui dépasse le seuil est considéré comme de la parole, le reste comme du silence ou du bruit de fond.
 
-Chaque segment de parole detecte est ensuite converti en embedding wav2vec2, puis envoye au classifieur (SVM et/ou MLP) qui identifie la commande prononcee.
+Chaque segment de parole détecté est ensuite converti en embedding wav2vec2, puis envoyé au classifieur (SVM et/ou MLP) qui identifie la commande prononcée.
 
 ## Utilisation de predict.py
 
@@ -61,18 +61,18 @@ python predict.py [config.yaml] [options]
 
 ### Options
 
-| Option | Defaut | Description |
+| Option | Par défaut | Description |
 |---|---|---|
-| `--model {svm,mlp,both}` | `both` | Modele(s) a utiliser |
+| `--model {svm,mlp,both}` | `both` | Modèle(s) à utiliser |
 | `--audio CHEMIN` | `data/` | Fichier .wav ou dossier de fichiers .wav |
 | `--top-db FLOAT` | `30.0` | Seuil de silence VAD en dB sous le pic (voir section VAD) |
-| `--min-dur FLOAT` | `0.2` | Duree minimale d'un segment detecte (secondes) |
-| `--max-dur FLOAT` | `2.0` | Duree maximale d'un segment detecte (secondes) |
+| `--min-dur FLOAT` | `0.2` | Durée minimale d'un segment détecté (secondes) |
+| `--max-dur FLOAT` | `2.0` | Durée maximale d'un segment détecté (secondes) |
 
 ### Exemples
 
 ```bash
-# Prediction sur tous les fichiers dans data/, les deux modeles
+# Prédiction sur tous les fichiers dans data/, les deux modèles
 python predict.py
 
 # Un seul fichier audio
@@ -84,13 +84,13 @@ python predict.py --model mlp
 # Fichiers dans un autre dossier
 python predict.py --audio /chemin/vers/mes/audios/
 
-# Ajuster la sensibilite du VAD
+# Ajuster la sensibilité du VAD
 python predict.py --top-db 25 --min-dur 0.3 --max-dur 1.5
 ```
 
 ## Format de sortie (JSON)
 
-Les resultats sont enregistres au format JSON dans `output/predictions/commands_{svm,mlp}.json`. Les predictions `none` (silence/bruit) sont exclues. Les commandes sont groupees par fichier audio et triees par temps de debut.
+Les résultats sont enregistrés au format JSON dans `output/predictions/commands_{svm,mlp}.json`. Les prédictions `none` (silence/bruit) sont exclues. Les commandes sont groupées par fichier audio et triées par temps de début.
 
 ```json
 {
@@ -106,20 +106,20 @@ Les resultats sont enregistres au format JSON dans `output/predictions/commands_
 }
 ```
 
-## Reglage du VAD
+## Réglage du VAD
 
-La VAD (Voice Activity Detection) detecte automatiquement les segments de parole en mesurant le niveau d'energie sonore de l'audio. Le parametre principal est `--top-db` : il definit le seuil de silence en decibels sous le pic le plus fort de l'enregistrement. Par exemple, avec `--top-db 30`, tout ce qui est a plus de 30 dB en dessous du pic est considere comme du silence.
+La VAD (Voice Activity Detection) détecte automatiquement les segments de parole en mesurant le niveau d'énergie sonore de l'audio. Le paramètre principal est `--top-db` : il définit le seuil de silence en décibels sous le pic le plus fort de l'enregistrement. Par exemple, avec `--top-db 30`, tout ce qui est à plus de 30 dB en dessous du pic est considéré comme du silence.
 
-Les parametres `--min-dur` et `--max-dur` filtrent ensuite les segments detectes par duree : ceux trop courts (bruits parasites) ou trop longs (plusieurs commandes collees) sont ecartes.
+Les paramètres `--min-dur` et `--max-dur` filtrent ensuite les segments détectés par durée : ceux trop courts (bruits parasites) ou trop longs (plusieurs commandes collées) sont écartés.
 
-Si les resultats ne sont pas satisfaisants :
+Si les résultats ne sont pas satisfaisants :
 
-| Probleme | Solution |
+| Problème | Solution |
 |---|---|
-| Trop de segments detectes (bruit de fond) | Baisser `--top-db` (ex: 25 ou 20) |
-| Des commandes ne sont pas detectees | Augmenter `--top-db` (ex: 35 ou 40) |
-| Segments trop courts (mots coupes) | Baisser `--min-dur` (ex: 0.1) |
-| Segments trop longs (plusieurs commandes fusionnees) | Baisser `--max-dur` (ex: 1.5) |
+| Trop de segments détectés (bruit de fond) | Baisser `--top-db` (ex: 25 ou 20) |
+| Des commandes ne sont pas détectées | Augmenter `--top-db` (ex: 35 ou 40) |
+| Segments trop courts (mots coupés) | Baisser `--min-dur` (ex: 0.1) |
+| Segments trop longs (plusieurs commandes fusionnées) | Baisser `--max-dur` (ex: 1.5) |
 
 ## Installation
 
@@ -127,7 +127,7 @@ Si les resultats ne sont pas satisfaisants :
 pip install -r requirements.txt
 ```
 
-Necessite Python 3.10+. Le premier lancement telecharge automatiquement le modele wav2vec2 (~3 Go).
+Nécessite Python 3.10+. Le premier lancement télécharge automatiquement le modèle wav2vec2 (~3 Go).
 
 ---
 

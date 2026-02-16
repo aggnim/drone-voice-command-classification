@@ -2,7 +2,7 @@
 
 > **ENGLISH VERSION BELOW**
 
-Pipeline de classification parole-vers-commande pour le pilotage de drones. Des enregistrements audio de locuteurs francophones prononçant des commandes de pilotage sont convertis en embeddings wav2vec2, puis classifiés par des modeles SVM ou MLP.
+Pipeline de classification parole-vers-commande pour le pilotage de drones. Des enregistrements audio de locuteurs francophones prononçant des commandes de pilotage sont convertis en embeddings wav2vec2, puis classifiés par des modèles SVM ou MLP.
 
 ## Classes de commandes
 
@@ -12,26 +12,26 @@ Les 9 classes reconnues :
 |---|---|
 | `forward` | Avancer |
 | `backward` | Reculer |
-| `left` | Translation a gauche |
-| `right` | Translation a droite |
+| `left` | Translation à gauche |
+| `right` | Translation à droite |
 | `up` | Monter |
 | `down` | Descendre |
-| `yawleft` | Rotation a gauche (lacet) |
-| `yawright` | Rotation a droite (lacet) |
+| `yawleft` | Rotation à gauche (lacet) |
+| `yawright` | Rotation à droite (lacet) |
 | `none` | Pas de commande / commande non-explicite |
 
-## Contenu du depot
+## Contenu du dépôt
 
 | Dossier | Description | Usage |
 |---|---|---|
-| `user_version/` | Package d'inference avec modeles pre-entraines | Utilisateurs finaux qui veulent simplement obtenir des predictions sur leurs fichiers audio |
-| `dev_version/` | Pipeline complet d'entrainement | Developpeurs qui veulent entrainer leurs propres modeles sur de nouvelles donnees |
+| `user_version/` | Package d'inférence avec modèles pré-entraînés | Utilisateurs finaux qui veulent simplement obtenir des prédictions sur leurs fichiers audio |
+| `dev_version/` | Pipeline complet d'entraînement | Développeurs qui veulent entraîner leurs propres modèles sur de nouvelles données |
 
-Chaque dossier contient son propre `README.md` avec les instructions detaillees.
+Chaque dossier contient son propre `README.md` avec les instructions détaillées.
 
-## Performance des modeles (jeu de test, 9 participants)
+## Performance des modèles (jeu de test, 9 participants)
 
-| Metrique | SVM | MLP |
+| Métrique | SVM | MLP |
 |---|---|---|
 | Accuracy | 0.836 | **0.866** |
 | F1-macro | 0.735 | **0.774** |
@@ -41,8 +41,8 @@ Chaque dossier contient son propre `README.md` avec les instructions detaillees.
 
 - **Embeddings** : [wav2vec2-FR-7K-large](https://huggingface.co/LeBenchmark/wav2vec2-FR-7K-large) (LeBenchmark) — embeddings de 1024 dimensions
 - **Classifieurs** : SVM (noyau RBF) et MLP (scikit-learn)
-- **Segmentation** : VAD par energie via librosa (`librosa.effects.split`)
-- **Validation croisee** : GroupKFold a 5 folds par participant (independance locuteur)
+- **Segmentation** : VAD par énergie via librosa (`librosa.effects.split`)
+- **Validation croisée** : GroupKFold à 5 folds par participant (indépendance locuteur)
 
 ## Installation
 
@@ -52,9 +52,9 @@ cd drone-voice-command-classification
 pip install -r requirements.txt
 ```
 
-## Credits
+## Crédits
 
-- Modele wav2vec2 : [LeBenchmark](https://huggingface.co/LeBenchmark) — wav2vec2-FR-7K-large
+- Modèle wav2vec2 : [LeBenchmark](https://huggingface.co/LeBenchmark) — wav2vec2-FR-7K-large
 - Classification : [scikit-learn](https://scikit-learn.org/)
 - Traitement audio : [librosa](https://librosa.org/)
 

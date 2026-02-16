@@ -1,68 +1,68 @@
-# VoiceStick — Guide developpeur
+# VoiceStick — Guide développeur
 
 > **ENGLISH VERSION BELOW**
 
-Pipeline complet pour entrainer des classifieurs de commandes de drone a partir d'enregistrements audio annotes. Comprend la preparation des donnees, l'entrainement (SVM et MLP), la prediction et l'evaluation.
+Pipeline complet pour entraîner des classifieurs de commandes de drone à partir d'enregistrements audio annotés. Comprend la préparation des données, l'entraînement (SVM et MLP), la prédiction et l'évaluation.
 
-## Demarrage rapide
+## Démarrage rapide
 
 1. Placez vos fichiers `.TextGrid` dans `data/textgrid/` et les fichiers `.wav` correspondants dans `data/audio/`
-2. Preparez les donnees :
+2. Préparez les données :
    ```bash
    python prepare_data.py
    ```
-3. Entrainez les modeles :
+3. Entraînez les modèles :
    ```bash
    python train_svm.py
    python train_mlp.py
    ```
-4. Predisez sur l'audio de test :
+4. Prédisez sur l'audio de test :
    ```bash
    python predict.py --use-ground-truth
    ```
-5. Evaluez les predictions :
+5. Évaluez les prédictions :
    ```bash
    python evaluate.py
    ```
 
 ## Structure du dossier
 
-### Avant execution
+### Avant exécution
 
 ```
 dev_version/
-├── prepare_data.py      # Preparation des donnees
-├── train_svm.py         # Entrainement SVM
-├── train_mlp.py         # Entrainement MLP
-├── predict.py           # Prediction sur audio brut
-├── evaluate.py          # Evaluation des predictions
+├── prepare_data.py      # Préparation des données
+├── train_svm.py         # Entraînement SVM
+├── train_mlp.py         # Entraînement MLP
+├── predict.py           # Prédiction sur audio brut
+├── evaluate.py          # Évaluation des prédictions
 ├── config.yaml          # Configuration
-├── requirements.txt     # Dependances Python
+├── requirements.txt     # Dépendances Python
 ├── data/
 │   ├── textgrid/        # Fichiers .TextGrid (annotations Praat)
 │   └── audio/           # Fichiers .wav (enregistrements)
-└── output/              # Vide au depart
+└── output/              # Vide au départ
 ```
 
-### Apres execution complete
+### Après exécution complète
 
 ```
 output/
 ├── dataset.csv                  # Dataset complet (tous les participants)
 ├── train/
-│   ├── dataset_train.csv        # Donnees d'entrainement
+│   ├── dataset_train.csv        # Données d'entraînement
 │   ├── audio_segments/          # Segments audio 16 kHz
 │   └── all_embeddings.npz       # Embeddings wav2vec2
 ├── test/
 │   ├── dataset_test.csv         # Labels ground truth (test)
 │   └── audio/                   # Fichiers audio bruts (test)
 ├── SVM_model/
-│   ├── model_svm.pkl            # Modele entraine
+│   ├── model_svm.pkl            # Modèle entraîné
 │   ├── scaler.pkl               # StandardScaler
 │   ├── label_encoder.pkl        # Encodeur de labels
-│   ├── cv_results_svm.json      # Resultats cross-validation
+│   ├── cv_results_svm.json      # Résultats cross-validation
 │   ├── confusion_matrix_svm.png # Matrice de confusion
-│   └── svm_output.txt           # Log d'entrainement
+│   └── svm_output.txt           # Log d'entraînement
 ├── MLP_model/
 │   ├── model_mlp.pkl
 │   ├── scaler.pkl
@@ -71,31 +71,31 @@ output/
 │   ├── confusion_matrix_mlp.png
 │   └── mlp_output.txt
 ├── predictions/
-│   ├── predictions_svm.csv      # Predictions SVM
-│   └── predictions_mlp.csv      # Predictions MLP
+│   ├── predictions_svm.csv      # Prédictions SVM
+│   └── predictions_mlp.csv      # Prédictions MLP
 └── evaluation/
-    ├── eval_svm.json            # Metriques SVM
-    ├── eval_mlp.json            # Metriques MLP
-    ├── comparison.json          # Comparaison cote a cote
+    ├── eval_svm.json            # Métriques SVM
+    ├── eval_mlp.json            # Métriques MLP
+    ├── comparison.json          # Comparaison côte à côte
     ├── confusion_matrix_eval_svm.png
     ├── confusion_matrix_eval_mlp.png
     └── evaluation_output.txt
 ```
 
-## Format des donnees
+## Format des données
 
 ### Fichiers audio
 
 - Format : `.wav`
-- Frequence d'echantillonnage : quelconque (reenregistre a 16 kHz en interne)
+- Fréquence d'échantillonnage : quelconque (réenregistré à 16 kHz en interne)
 - Convention de nommage : `DD_MM_YY_HH_MM_SS_NNN.wav`
   - `DD_MM_YY_HH_MM_SS` : identifiant du participant (date/heure de la session)
-  - `NNN` : numero de tentative (`000` a `005`)
+  - `NNN` : numéro de tentative (`000` à `005`)
 
 ### Fichiers TextGrid (Praat)
 
-- Encodage : UTF-8 ou UTF-16 avec BOM (detection automatique)
-- Un tier nomme `commands` (insensible a la casse)
+- Encodage : UTF-8 ou UTF-16 avec BOM (détection automatique)
+- Un tier nommé `commands` (insensible à la casse)
 - Labels : les 8 commandes directionnelles + `none`
 
 ```
@@ -104,13 +104,13 @@ forward | backward | left | right | up | down | yawleft | yawright | none
 
 #### Comment annoter
 
-1. Ouvrez le fichier `.wav` dans Praat et creez un objet TextGrid associe
-2. Ajoutez un tier de type **interval** nomme `commands`
-3. Pour chaque passage ou le locuteur prononce une commande directionnelle (`forward`, `backward`, `left`, `right`, `up`, `down`, `yawleft`, `yawright`), creez un segment couvrant la duree de la commande et inscrivez le label correspondant
-4. Pour les passages ou le locuteur parle sans prononcer de commande directionnelle (parole non-pertinente, hesitations, commentaires, etc.), creez un segment et annotez-le `none`
-5. Les silences (aucune activite vocale) sont laisses sans annotation — ne creez pas de segment pour les parties silencieuses
+1. Ouvrez le fichier `.wav` dans Praat et créez un objet TextGrid associé
+2. Ajoutez un tier de type **interval** nommé `commands`
+3. Pour chaque passage où le locuteur prononce une commande directionnelle (`forward`, `backward`, `left`, `right`, `up`, `down`, `yawleft`, `yawright`), créez un segment couvrant la durée de la commande et inscrivez le label correspondant
+4. Pour les passages où le locuteur parle sans prononcer de commande directionnelle (parole non-pertinente, hésitations, commentaires, etc.), créez un segment et annotez-le `none`
+5. Les silences (aucune activité vocale) sont laissés sans annotation — ne créez pas de segment pour les parties silencieuses
 
-En resume : toute parole doit etre annotee (commande ou `none`), seuls les silences restent non annotes. Les intervalles vides sont automatiquement traites comme `none` par le pipeline.
+En résumé : toute parole doit être annotée (commande ou `none`), seuls les silences restent non annotés. Les intervalles vides sont automatiquement traités comme `none` par le pipeline.
 
 ## Configuration (config.yaml)
 
@@ -122,69 +122,69 @@ paths:
 
 data_preparation:
   tier_name: "commands"    # Nom du tier TextGrid
-  skip_if_cached: true     # Reutiliser les fichiers intermediaires existants
-  test_size: 0.15          # Proportion de participants reserves pour le test
-  random_seed: 42          # Graine pour la reproductibilite du split
+  skip_if_cached: true     # Réutiliser les fichiers intermédiaires existants
+  test_size: 0.15          # Proportion de participants réservés pour le test
+  random_seed: 42          # Graine pour la reproductibilité du split
 
 training:
-  balance_classes: true    # Sous-echantillonner la classe "none"
+  balance_classes: true    # Sous-échantillonner la classe "none"
   none_ratio: 1.0          # Ratio max de "none" vs la plus grande classe de commande
   n_folds: 5               # Nombre de folds pour la cross-validation (GroupKFold)
 ```
 
-## Etapes du pipeline
+## Étapes du pipeline
 
-### 1. Preparation des donnees — `python prepare_data.py`
+### 1. Préparation des données — `python prepare_data.py`
 
-Cinq etapes executees sequentiellement :
+Cinq étapes exécutées séquentiellement :
 
 1. **Parsing** des TextGrids : extrait les annotations du tier `commands` vers `dataset.csv`
 2. **Split** des participants 85/15 en ensembles train/test (par participant, pas par segment)
-3. **Segmentation** de l'audio d'entrainement en clips WAV 16 kHz dans `train/audio_segments/`
+3. **Segmentation** de l'audio d'entraînement en clips WAV 16 kHz dans `train/audio_segments/`
 4. **Extraction d'embeddings** wav2vec2-FR-7K-large (mean-pooling) vers `train/all_embeddings.npz`
 5. **Copie** des fichiers audio bruts des participants de test vers `test/audio/`
 
-L'option `skip_if_cached: true` permet de reprendre une execution interrompue sans recalculer les etapes deja completees.
+L'option `skip_if_cached: true` permet de reprendre une exécution interrompue sans recalculer les étapes déjà complétées.
 
-### 2. Entrainement SVM — `python train_svm.py`
+### 2. Entraînement SVM — `python train_svm.py`
 
-- Lit les donnees depuis `output/train/`
-- Cross-validation GroupKFold a 5 folds (groupement par participant)
-- Par fold : equilibrage des classes, StandardScaler, SVC(kernel='rbf', C=10, class_weight='balanced')
-- Affiche les metriques par fold et la moyenne
-- Entraine le modele final sur toutes les donnees d'entrainement
+- Lit les données depuis `output/train/`
+- Cross-validation GroupKFold à 5 folds (groupement par participant)
+- Par fold : équilibrage des classes, StandardScaler, SVC(kernel='rbf', C=10, class_weight='balanced')
+- Affiche les métriques par fold et la moyenne
+- Entraîne le modèle final sur toutes les données d'entraînement
 - Sauvegarde dans `output/SVM_model/`
 
-### 3. Entrainement MLP — `python train_mlp.py`
+### 3. Entraînement MLP — `python train_mlp.py`
 
-Meme structure que le SVM :
+Même structure que le SVM :
 
-- Cross-validation GroupKFold a 5 folds
-- Par fold : equilibrage des classes, StandardScaler, MLPClassifier
+- Cross-validation GroupKFold à 5 folds
+- Par fold : équilibrage des classes, StandardScaler, MLPClassifier
 - Sauvegarde dans `output/MLP_model/`
 
-### 4. Prediction — `python predict.py --use-ground-truth`
+### 4. Prédiction — `python predict.py --use-ground-truth`
 
-En mode `--use-ground-truth` (recommande pour l'evaluation) :
+En mode `--use-ground-truth` (recommandé pour l'évaluation) :
 
 - Utilise les bornes temporelles de `dataset_test.csv`
 - Extrait les embeddings wav2vec2 des segments de test
 - Classifie avec SVM et/ou MLP
-- Sauvegarde les predictions CSV dans `output/predictions/`
+- Sauvegarde les prédictions CSV dans `output/predictions/`
 
 Autres modes disponibles :
 
 ```bash
-python predict.py                          # VAD sur test/audio/, les deux modeles
+python predict.py                          # VAD sur test/audio/, les deux modèles
 python predict.py --model svm              # SVM uniquement
 python predict.py --audio path/to/file.wav # N'importe quel fichier audio
 ```
 
-### 5. Evaluation — `python evaluate.py`
+### 5. Évaluation — `python evaluate.py`
 
-- Compare les predictions (`predictions_svm.csv`, `predictions_mlp.csv`) aux labels ground truth
-- Par modele : accuracy, F1-macro, F1-weighted, rapport par classe, matrice de confusion
-- Tableau de comparaison cote a cote si les deux modeles sont disponibles
+- Compare les prédictions (`predictions_svm.csv`, `predictions_mlp.csv`) aux labels ground truth
+- Par modèle : accuracy, F1-macro, F1-weighted, rapport par classe, matrice de confusion
+- Tableau de comparaison côte à côte si les deux modèles sont disponibles
 - Sauvegarde dans `output/evaluation/`
 
 ## Installation
@@ -193,7 +193,7 @@ python predict.py --audio path/to/file.wav # N'importe quel fichier audio
 pip install -r requirements.txt
 ```
 
-Necessite Python 3.10+. Le premier lancement de `prepare_data.py` telecharge automatiquement le modele wav2vec2 (~3 Go).
+Nécessite Python 3.10+. Le premier lancement de `prepare_data.py` télécharge automatiquement le modèle wav2vec2 (~3 Go).
 
 ---
 
